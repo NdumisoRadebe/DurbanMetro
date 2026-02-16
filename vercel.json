@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["jnb1"],
+  "crons": [
+    {
+      "path": "/api/cron/daily-reports",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/aol-check",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}

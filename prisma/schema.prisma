@@ -1,0 +1,185 @@
+// DMP-TMS - Durban Metropolitan Police Time Management System
+// eThekwini Municipality
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  role          Role      @default(HR_ADMIN)
+  password      String
+  mfaEnabled    Boolean   @default(false)
+  mfaSecret     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isActive      Boolean   @default(true)
+  lastLogin     DateTime?
+  failedAttempts Int      @default(0)
+  lockedUntil   DateTime?
+  auditLogs     AuditLog[]
+  timeEntries   TimeEntry[] @relation("CreatedBy")
+  leaveApprovals Leave[]  @relation("ApprovedBy")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Officer {
+  id              String    @id @default(cuid())
+  aoNumber        String    @unique
+  pcNumber        String    @unique
+  firstName       String
+  lastName        String
+  rank            String
+  station         String
+  contactNumber   String?
+  email           String?
+  dateOfJoining   DateTime
+  status          OfficerStatus @default(ACTIVE)
+  profilePhoto    String?
+
+  annualLeaveEntitlement  Float @default(21)
+  annualLeaveTaken        Float @default(0)
+  sickLeaveEntitlement    Float @default(30)
+  sickLeaveTaken          Float @default(0)
+
+  timeEntries     TimeEntry[]
+  leaves          Leave[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([aoNumber])
+  @@index([pcNumber])
+  @@index([status])
+  @@index([station])
+}
+
+model TimeEntry {
+  id            String   @id @default(cuid())
+  officerId     String
+  officer       Officer  @relation(fields: [officerId], references: [id], onDelete: Cascade)
+
+  clockIn       DateTime
+  clockOut      DateTime?
+  shiftType     ShiftType @default(DAY)
+  breakMinutes  Int      @default(0)
+
+  hoursWorked   Float?
+  isOvertime    Boolean  @default(false)
+
+  location      String?
+  notes         String?
+  createdBy     String
+  creator       User     @relation("CreatedBy", fields: [createdBy], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  isCorrected   Boolean  @default(false)
+  correctionReason String?
+
+  @@index([officerId])
+  @@index([clockIn])
+  @@index([clockOut])
+}
+
+model Leave {
+  id              String   @id @default(cuid())
+  officerId       String
+  officer         Officer  @relation(fields: [officerId], references: [id], onDelete: Cascade)
+
+  leaveType       LeaveType
+  startDate       DateTime
+  endDate         DateTime
+  daysRequested   Float
+  daysApproved    Float?
+
+  reason          String?
+  documents       String[] @default([])
+
+  status          LeaveStatus @default(PENDING)
+  approvedBy      String?
+  approver        User?    @relation("ApprovedBy", fields: [approvedBy], references: [id])
+  approvedAt      DateTime?
+  rejectionReason String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([officerId])
+  @@index([status])
+  @@index([startDate])
+  @@index([leaveType])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  action      String
+  entityType  String
+  entityId    String
+  oldValues   Json?
+  newValues   Json?
+  timestamp   DateTime @default(now())
+  ipAddress   String?
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([entityType])
+}
+
+model LeaveTypeConfig {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  color       String   @default("#6B7280")
+  isPaid      Boolean  @default(true)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  HR_ADMIN
+  VIEWER
+}
+
+enum OfficerStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  RETIRED
+}
+
+enum ShiftType {
+  DAY
+  NIGHT
+  SPECIAL
+}
+
+enum LeaveType {
+  ANL
+  SICK
+  AOL
+  FR
+  TRN
+  COMP
+  MAT
+  SUS
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
