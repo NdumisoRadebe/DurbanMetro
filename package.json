@@ -1,9 +1,12 @@
 {
   "name": "dmp-tms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "engines": {
-    "node": ">=18.x"
+    "node": "18.x"
+  },
+  "vercel": {
+    "framework": "nextjs"
   },
   "scripts": {
     "dev": "next dev",
