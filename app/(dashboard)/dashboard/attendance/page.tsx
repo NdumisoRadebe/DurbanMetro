@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ClockIn, ClockOut } from "lucide-react"
+import { LogIn, LogOut } from "lucide-react"
 import { formatDateTime, formatTime } from "@/lib/utils"
 
 export default async function AttendancePage() {
@@ -33,13 +33,13 @@ export default async function AttendancePage() {
         <div className="flex gap-4">
           <Link href="/dashboard/attendance/clock-in">
             <Button className="gap-2">
-              <ClockIn className="h-5 w-5" />
+              <LogIn className="h-5 w-5" />
               Clock In
             </Button>
           </Link>
           <Link href="/dashboard/attendance/clock-out">
             <Button variant="secondary" className="gap-2">
-              <ClockOut className="h-5 w-5" />
+              <LogOut className="h-5 w-5" />
               Clock Out
             </Button>
           </Link>

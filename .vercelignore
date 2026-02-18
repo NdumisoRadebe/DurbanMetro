@@ -1,0 +1,6 @@
+# Only ignore non-essential files - ensure app code is included
+node_modules
+.git
+*.log
+.env.local
+.env*.local

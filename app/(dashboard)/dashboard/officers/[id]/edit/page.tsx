@@ -30,8 +30,18 @@ export default async function EditOfficerPage({
 
       <OfficerForm
         officer={{
-          ...officer,
+          aoNumber: officer.aoNumber,
+          pcNumber: officer.pcNumber,
+          firstName: officer.firstName,
+          lastName: officer.lastName,
+          rank: officer.rank,
+          station: officer.station,
+          contactNumber: officer.contactNumber ?? undefined,
+          email: officer.email ?? undefined,
           dateOfJoining: officer.dateOfJoining.toISOString().split("T")[0],
+          status: officer.status,
+          annualLeaveEntitlement: officer.annualLeaveEntitlement,
+          sickLeaveEntitlement: officer.sickLeaveEntitlement,
         }}
         stations={stations.map((s) => s.station)}
       />

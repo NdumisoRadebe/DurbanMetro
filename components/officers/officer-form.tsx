@@ -44,7 +44,7 @@ export function OfficerForm({ stations, officer }: OfficerFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const stationOptions = [...new Set([...(officer?.station ? [officer.station] : []), ...stations])]
+  const stationOptions = Array.from(new Set([...(officer?.station ? [officer.station] : []), ...stations]))
 
   const form = useForm<OfficerFormValues>({
     resolver: zodResolver(officerSchema),
