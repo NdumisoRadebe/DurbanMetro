@@ -2,7 +2,6 @@
   "version": 2,
   "buildCommand": "prisma generate && next build",
   "installCommand": "npm install",
-  "regions": ["jnb1"],
   "crons": [
     {
       "path": "/api/cron/daily-reports",
