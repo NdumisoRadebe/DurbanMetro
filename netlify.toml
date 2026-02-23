@@ -1,0 +1,10 @@
+[build]
+  base    = "."
+  command = "prisma generate && next build"
+  # Do NOT set Base directory or Publish directory in Netlify UI - use repo root
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
