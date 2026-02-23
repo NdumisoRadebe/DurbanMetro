@@ -1,7 +1,7 @@
 [build]
   base    = "."
   command = "prisma generate && next build"
-  # Do NOT set Base directory or Publish directory in Netlify UI - use repo root
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
